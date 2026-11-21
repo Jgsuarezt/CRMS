@@ -264,6 +264,47 @@ export async function seedWorkspaceDefaults(workspaceId: string, ownerId: string
       },
     ],
   });
+
+  await prisma.catalogItem.createMany({
+    data: [
+      {
+        workspaceId,
+        sku: "205/55 R16",
+        name: "Michelin Primacy 4 (Instalación incluida)",
+        tier: "PREMIUM",
+        price: 125,
+        stock: 8,
+      },
+      {
+        workspaceId,
+        sku: "205/55 R16",
+        name: "Hankook Kinergy GT",
+        tier: "MEDIA",
+        price: 89,
+        stock: 12,
+      },
+      {
+        workspaceId,
+        sku: "195/65 R15",
+        name: "Tornel Real (Económica)",
+        tier: "ECONOMICA",
+        price: 58,
+        stock: 16,
+      },
+    ],
+  });
+
+  await prisma.serviceOrder.create({
+    data: {
+      workspaceId,
+      customerName: "Sofía Mendoza",
+      customerPhone: "+525512345678",
+      description: "4 Llantas 205/55 R16 + Alineación y Balanceo",
+      amount: 380,
+      nextReminderAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 180),
+      reminderSent: false,
+    },
+  });
 }
 
 export async function ensureDemoSession() {

@@ -40,6 +40,8 @@ model Workspace {
   campaigns          Campaign[]
   automations        AutomationFlow[]
   webhookLogs        WebhookLog[]
+  catalogItems       CatalogItem[]
+  serviceOrders      ServiceOrder[]
 }
 
 model WorkspaceMember {
@@ -158,4 +160,29 @@ model WebhookLog {
   status      String    @default("PROCESSED")
   createdAt   DateTime  @default(now())
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+}
+
+model CatalogItem {
+  id          String    @id @default(cuid())
+  workspaceId String
+  sku         String
+  name        String
+  tier        String    @default("MEDIA") // ECONOMICA | MEDIA | PREMIUM
+  price       Float
+  stock       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+}
+
+model ServiceOrder {
+  id             String    @id @default(cuid())
+  workspaceId    String
+  customerName   String
+  customerPhone  String
+  description    String
+  amount         Float     @default(0)
+  nextReminderAt DateTime
+  reminderSent   Boolean   @default(false)
+  createdAt      DateTime  @default(now())
+  workspace      Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 }

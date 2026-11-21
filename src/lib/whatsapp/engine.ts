@@ -209,9 +209,20 @@ export async function processInboundMessage(params: {
       data: { executionsCount: { increment: 1 } },
     });
   } else if (workspace.aiEnabled) {
+    const inStockItems = await prisma.catalogItem.findMany({
+      where: { workspaceId, stock: { gt: 0 } },
+      take: 15,
+    });
+    const inventoryText =
+      inStockItems.length > 0
+        ? `\n\nInventario en stock disponible:\n${inStockItems
+            .map((i) => `- ${i.sku} | ${i.name} (${i.tier}): $${i.price} USD (Stock: ${i.stock})`)
+            .join("\n")}`
+        : "";
+
     autoReplyText = await generateAiReply(
       workspace.aiSystemPrompt,
-      workspace.aiKnowledgeBase,
+      `${workspace.aiKnowledgeBase}${inventoryText}`,
       body,
       contact.name
     );
