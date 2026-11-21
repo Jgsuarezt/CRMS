@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Plus, Search, UserPlus } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Search, Upload, UserPlus } from "lucide-react";
 
 interface ContactItem {
   id: string;
@@ -23,6 +23,8 @@ export default function ContactsPage() {
   const [segment, setSegment] = useState("Leads");
   const [tags, setTags] = useState("Nuevo");
   const [saving, setSaving] = useState(false);
+  const [importMsg, setImportMsg] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   async function loadContacts() {
     const res = await fetch("/api/contacts");
@@ -56,6 +58,45 @@ export default function ContactsPage() {
     }
   }
 
+  async function handleCsvUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImportMsg("Importando contactos...");
+    const text = await file.text();
+    const lines = text
+      .split(/\r?\n/)
+      .map((l) => l.trim())
+      .filter(Boolean);
+
+    const rows = lines
+      .filter((_, idx) => !(idx === 0 && lines[0].toLowerCase().includes("nombre")))
+      .map((line) => {
+        const cols = line.split(/[,;]/).map((c) => c.trim().replace(/^"|"$/g, ""));
+        return {
+          name: cols[0] || "",
+          phone: cols[1] || "",
+          email: cols[2] || "",
+          segment: cols[3] || "Leads",
+          tags: cols[4] || "CSV",
+        };
+      })
+      .filter((r) => r.name && r.phone);
+
+    const res = await fetch("/api/contacts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "IMPORT_CSV", rows }),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      setImportMsg(`Se importaron ${data.imported} contactos correctamente.`);
+      await loadContacts();
+    } else {
+      setImportMsg(data.error || "Error al importar CSV");
+    }
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }
+
   const filtered = contacts.filter((c) => {
     if (!search.trim()) return true;
     const q = search.toLowerCase();
@@ -68,12 +109,38 @@ export default function ContactsPage() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">Contactos & Segmentos CRM</h1>
-        <p className="text-sm text-slate-600 mt-1">
-          Administra tus suscriptores de WhatsApp con opt-in verificado y etiquetas personalizadas.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">Contactos & Segmentos CRM</h1>
+          <p className="text-sm text-slate-600 mt-1">
+            Administra tus suscriptores o importa listas masivas en CSV (nombre,telefono,email,segmento).
+          </p>
+        </div>
+
+        <div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".csv,.txt"
+            onChange={handleCsvUpload}
+            className="hidden"
+          />
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800 transition cursor-pointer"
+          >
+            <Upload className="w-4 h-4 text-emerald-400" />
+            <span>Importar CSV</span>
+          </button>
+        </div>
       </div>
+
+      {importMsg ? (
+        <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-semibold">
+          {importMsg}
+        </div>
+      ) : null}
 
       {/* Add Contact Form */}
       <form

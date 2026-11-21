@@ -42,12 +42,14 @@ export default function InboxPage() {
   const [conversations, setConversations] = useState<ConversationItem[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [filter, setFilter] = useState("ALL");
+  const [channelFilter, setChannelFilter] = useState("ALL");
   const [search, setSearch] = useState("");
   const [replyText, setReplyText] = useState("");
   const [sending, setSending] = useState(false);
 
   // Simulator modal state
   const [simOpen, setSimOpen] = useState(false);
+  const [simChannel, setSimChannel] = useState<"WHATSAPP" | "MESSENGER" | "INSTAGRAM">("WHATSAPP");
   const [simName, setSimName] = useState("Lucía Gómez");
   const [simPhone, setSimPhone] = useState("+525598765432");
   const [simBody, setSimBody] = useState("Hola! Cuál es el precio de los planes?");
@@ -72,6 +74,7 @@ export default function InboxPage() {
 
   const filtered = conversations.filter((c) => {
     if (filter !== "ALL" && c.status !== filter) return false;
+    if (channelFilter !== "ALL" && c.channel !== channelFilter) return false;
     if (search.trim()) {
       const q = search.toLowerCase();
       return (
@@ -125,7 +128,7 @@ export default function InboxPage() {
           contactName: simName,
           fromPhone: simPhone,
           body: simBody,
-          channel: "WHATSAPP",
+          channel: simChannel,
         }),
       });
       const data = await res.json();
@@ -397,6 +400,18 @@ export default function InboxPage() {
 
             <form onSubmit={handleSimulateInbound} className="space-y-3">
               <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Canal</label>
+                <select
+                  value={simChannel}
+                  onChange={(e) => setSimChannel(e.target.value as "WHATSAPP" | "MESSENGER" | "INSTAGRAM")}
+                  className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm bg-white"
+                >
+                  <option value="WHATSAPP">WhatsApp Oficial</option>
+                  <option value="MESSENGER">Facebook Messenger (Página)</option>
+                  <option value="INSTAGRAM">Instagram DM</option>
+                </select>
+              </div>
+              <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">Nombre del Cliente</label>
                 <input
                   type="text"
@@ -407,7 +422,7 @@ export default function InboxPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Teléfono WhatsApp</label>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Teléfono o ID</label>
                 <input
                   type="text"
                   required
@@ -417,7 +432,25 @@ export default function InboxPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Mensaje del Cliente</label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-xs font-semibold text-slate-700">Mensaje del Cliente</label>
+                  <div className="flex gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => setSimBody("[Nota de voz] Hola, busco llantas 205/55 R16 con instalación")}
+                      className="text-[10px] px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold cursor-pointer"
+                    >
+                      + Audio
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSimBody("[Foto adjunta: llanta 205/55 R16] ¿Tienes esta medida?")}
+                      className="text-[10px] px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold cursor-pointer"
+                    >
+                      + Foto
+                    </button>
+                  </div>
+                </div>
                 <textarea
                   rows={3}
                   required

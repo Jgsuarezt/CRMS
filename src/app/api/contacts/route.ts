@@ -19,7 +19,43 @@ export async function POST(req: Request) {
   if (!session) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
 
   try {
-    const { name, phone, email, segment, tags } = await req.json();
+    const body = await req.json();
+
+    if (body.action === "IMPORT_CSV" && Array.isArray(body.rows)) {
+      let imported = 0;
+      for (const row of body.rows.slice(0, 500)) {
+        const rowName = String(row.name || "").trim();
+        const rowPhone = String(row.phone || "").trim();
+        if (!rowName || !rowPhone) continue;
+
+        await prisma.contact.upsert({
+          where: {
+            workspaceId_phone: {
+              workspaceId: session.workspace.id,
+              phone: rowPhone,
+            },
+          },
+          update: {
+            name: rowName,
+            email: row.email ? String(row.email).trim() : null,
+            segment: row.segment ? String(row.segment).trim() : "Leads",
+            tags: row.tags ? String(row.tags).trim() : "Importado",
+          },
+          create: {
+            workspaceId: session.workspace.id,
+            name: rowName,
+            phone: rowPhone,
+            email: row.email ? String(row.email).trim() : null,
+            segment: row.segment ? String(row.segment).trim() : "Leads",
+            tags: row.tags ? String(row.tags).trim() : "Importado",
+          },
+        });
+        imported++;
+      }
+      return NextResponse.json({ ok: true, imported });
+    }
+
+    const { name, phone, email, segment, tags } = body;
     if (!name || !phone) {
       return NextResponse.json({ error: "Nombre y teléfono son obligatorios" }, { status: 400 });
     }
