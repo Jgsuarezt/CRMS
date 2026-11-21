@@ -1,0 +1,161 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String            @id @default(cuid())
+  name         String
+  email        String            @unique
+  passwordHash String
+  createdAt    DateTime          @default(now())
+  memberships  WorkspaceMember[]
+  assignedConvos Conversation[]  @relation("AssignedAgent")
+}
+
+model Workspace {
+  id                 String            @id @default(cuid())
+  name               String
+  slug               String            @unique
+  plan               String            @default("STARTER") // FREE | STARTER | PRO | ENTERPRISE
+  wabaId             String?
+  phoneNumberId      String?
+  displayPhone       String?           @default("+1 555 019 2834")
+  accessToken        String?
+  webhookVerifyToken String            @default("crms_verify_token_2026")
+  sandboxMode        Boolean           @default(true)
+  aiEnabled          Boolean           @default(true)
+  aiAgentName        String            @default("ChimpBot IA")
+  aiSystemPrompt     String            @default("Eres un asistente comercial amable y conciso para WhatsApp. Responde dudas sobre precios, horarios y agenda citas.")
+  aiKnowledgeBase    String            @default("Horario: Lunes a Viernes 9:00 - 18:00.\nPlanes SaaS: Starter $29/mes, Pro $79/mes, Enterprise $199/mes.\n0% de recargo sobre tarifas oficiales de Meta.")
+  createdAt          DateTime          @default(now())
+  members            WorkspaceMember[]
+  contacts           Contact[]
+  conversations      Conversation[]
+  templates          Template[]
+  campaigns          Campaign[]
+  automations        AutomationFlow[]
+  webhookLogs        WebhookLog[]
+}
+
+model WorkspaceMember {
+  id          String    @id @default(cuid())
+  workspaceId String
+  userId      String
+  role        String    @default("OWNER") // OWNER | ADMIN | AGENT
+  createdAt   DateTime  @default(now())
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, userId])
+}
+
+model Contact {
+  id            String         @id @default(cuid())
+  workspaceId   String
+  name          String
+  phone         String
+  email         String?
+  segment       String         @default("Leads")
+  tags          String         @default("Nuevo")
+  customFields  String         @default("{}")
+  optIn         Boolean        @default(true)
+  createdAt     DateTime       @default(now())
+  workspace     Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  conversations Conversation[]
+
+  @@unique([workspaceId, phone])
+}
+
+model Conversation {
+  id            String    @id @default(cuid())
+  workspaceId   String
+  contactId     String
+  channel       String    @default("WHATSAPP") // WHATSAPP | INSTAGRAM | MESSENGER
+  status        String    @default("OPEN") // OPEN | PENDING | RESOLVED
+  assignedToId  String?
+  unreadCount   Int       @default(0)
+  lastMessageAt DateTime  @default(now())
+  createdAt     DateTime  @default(now())
+  workspace     Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  contact       Contact   @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  assignedTo    User?     @relation("AssignedAgent", fields: [assignedToId], references: [id], onDelete: SetNull)
+  messages      Message[]
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  direction      String       // INBOUND | OUTBOUND
+  type           String       @default("TEXT") // TEXT | TEMPLATE | INTERACTIVE | IMAGE
+  body           String
+  templateName   String?
+  externalId     String?
+  status         String       @default("DELIVERED") // SENT | DELIVERED | READ | FAILED
+  isAiGenerated  Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+}
+
+model Template {
+  id          String     @id @default(cuid())
+  workspaceId String
+  name        String
+  category    String     @default("MARKETING") // MARKETING | UTILITY | AUTHENTICATION
+  language    String     @default("es")
+  headerText  String?
+  body        String
+  footerText  String?
+  buttonsJson String     @default("[]")
+  status      String     @default("APPROVED") // APPROVED | PENDING | REJECTED
+  createdAt   DateTime   @default(now())
+  workspace   Workspace  @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  campaigns   Campaign[]
+}
+
+model Campaign {
+  id             String    @id @default(cuid())
+  workspaceId    String
+  name           String
+  templateId     String
+  targetSegment  String    @default("Todos")
+  status         String    @default("COMPLETED") // DRAFT | SCHEDULED | COMPLETED
+  totalCount     Int       @default(0)
+  sentCount      Int       @default(0)
+  deliveredCount Int       @default(0)
+  readCount      Int       @default(0)
+  failedCount    Int       @default(0)
+  createdAt      DateTime  @default(now())
+  workspace      Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  template       Template  @relation(fields: [templateId], references: [id], onDelete: Cascade)
+}
+
+model AutomationFlow {
+  id              String    @id @default(cuid())
+  workspaceId     String
+  name            String
+  triggerType     String    @default("KEYWORD") // KEYWORD | WELCOME | DRIP | WEBHOOK
+  triggerKeywords String    @default("")
+  responseText    String
+  buttonsJson     String    @default("[]")
+  delayMinutes    Int       @default(0)
+  isActive        Boolean   @default(true)
+  executionsCount Int       @default(0)
+  createdAt       DateTime  @default(now())
+  workspace       Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+}
+
+model WebhookLog {
+  id          String    @id @default(cuid())
+  workspaceId String
+  source      String    @default("SANDBOX") // META_CLOUD_API | SANDBOX
+  eventType   String
+  payloadJson String
+  status      String    @default("PROCESSED")
+  createdAt   DateTime  @default(now())
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+}
