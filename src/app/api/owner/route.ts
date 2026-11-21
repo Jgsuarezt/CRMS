@@ -28,6 +28,7 @@ export async function GET() {
   const dueReminders = orders.filter((o) => !o.reminderSent);
 
   return NextResponse.json({
+    workspaceSlug: session.workspace.slug,
     catalog,
     orders,
     todayStats: {

@@ -39,6 +39,7 @@ export default function OwnerAppPage() {
   const [catalog, setCatalog] = useState<CatalogItem[]>([]);
   const [dueReminders, setDueReminders] = useState<ServiceOrderItem[]>([]);
   const [todayStats, setTodayStats] = useState({ count: 0, revenue: 0 });
+  const [workspaceSlug, setWorkspaceSlug] = useState("");
   const [banner, setBanner] = useState("");
 
   // Quick service sale + Google Review sender
@@ -77,6 +78,7 @@ export default function OwnerAppPage() {
     setCatalog(data.catalog || []);
     setDueReminders(data.dueReminders || []);
     setTodayStats(data.todayStats || { count: 0, revenue: 0 });
+    if (data.workspaceSlug) setWorkspaceSlug(data.workspaceSlug);
     if (!selectedSkuId && data.catalog?.length > 0) {
       setSelectedSkuId(data.catalog[0].id);
     }
@@ -213,9 +215,21 @@ export default function OwnerAppPage() {
             Corte diario, inventario conectado a la IA, cotizador express, recordatorios y Blog SEO.
           </p>
         </div>
-        <div className="inline-flex items-center gap-2 rounded-xl bg-emerald-50 border border-emerald-200 px-3.5 py-2 text-xs font-semibold text-emerald-800">
-          <Smartphone className="w-4 h-4" />
-          <span>PWA lista: en tu celular usa &quot;Agregar a pantalla de inicio&quot;</span>
+        <div className="flex flex-wrap items-center gap-2.5">
+          {workspaceSlug ? (
+            <a
+              href={`/tienda/${workspaceSlug}`}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-700 transition"
+            >
+              <span>Abrir Tienda en Línea</span>
+            </a>
+          ) : null}
+          <div className="inline-flex items-center gap-2 rounded-xl bg-emerald-50 border border-emerald-200 px-3.5 py-2 text-xs font-semibold text-emerald-800">
+            <Smartphone className="w-4 h-4" />
+            <span>PWA lista: &quot;Agregar a pantalla de inicio&quot;</span>
+          </div>
         </div>
       </div>
 

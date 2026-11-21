@@ -78,9 +78,9 @@ const PLANS = [
     desc: "WhatsApp + Messenger + Instagram + Blog SEO automático para atraer tráfico.",
     features: [
       "WhatsApp + Facebook Messenger + Instagram DM",
-      "Blog SEO automático (tráfico web a tu WhatsApp)",
+      "Tienda en Línea propia + Blog SEO automático",
       "App del Dueño + 15 agentes y 25,000 contactos",
-      "Google Sheets, Shopify, Webhooks y API",
+      "Google Sheets, Webhooks y API",
     ],
     popular: false,
   },
