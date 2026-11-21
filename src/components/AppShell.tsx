@@ -13,6 +13,7 @@ import {
   MessageSquareText,
   Settings,
   Users,
+  Wrench,
   X,
 } from "lucide-react";
 import { useState } from "react";
@@ -23,6 +24,7 @@ const NAV_ITEMS = [
   { href: "/app/campaigns", label: "Campañas & Plantillas", icon: Megaphone },
   { href: "/app/automation", label: "Chatbot & Agente IA", icon: Bot },
   { href: "/app/contacts", label: "Contactos CRM", icon: Users },
+  { href: "/app/owner", label: "App Dueño & Blog SEO", icon: Wrench },
   { href: "/app/billing", label: "Planes & Facturación", icon: CreditCard },
   { href: "/app/settings", label: "WhatsApp API & Ajustes", icon: Settings },
 ];

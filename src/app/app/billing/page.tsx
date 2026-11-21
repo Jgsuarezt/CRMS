@@ -6,7 +6,7 @@ import { Check, CreditCard, ShieldCheck } from "lucide-react";
 const PLANS = [
   { id: "STARTER", name: "Básico", price: "$12/mes", desc: "2,000 contactos · 2 agentes · Bot de menú" },
   { id: "PRO", name: "Pro IA", price: "$24/mes", desc: "5 agentes · IA Audios/Fotos · Citas & Reseñas Google" },
-  { id: "ENTERPRISE", name: "Business", price: "$39/mes", desc: "WhatsApp + Messenger + IG · 15 agentes · Webhooks" },
+  { id: "ENTERPRISE", name: "Business", price: "$39/mes", desc: "WhatsApp + Messenger + IG · Blog SEO · App Dueño" },
 ];
 
 export default function BillingPage() {

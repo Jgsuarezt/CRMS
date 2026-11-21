@@ -75,12 +75,12 @@ const PLANS = [
   {
     name: "Business Omnicanal",
     price: "$39",
-    desc: "WhatsApp + Messenger + Instagram en un solo inbox para múltiples sucursales.",
+    desc: "WhatsApp + Messenger + Instagram + Blog SEO automático para atraer tráfico.",
     features: [
       "WhatsApp + Facebook Messenger + Instagram DM",
-      "Hasta 15 agentes y 25,000 contactos",
+      "Blog SEO automático (tráfico web a tu WhatsApp)",
+      "App del Dueño + 15 agentes y 25,000 contactos",
       "Google Sheets, Shopify, Webhooks y API",
-      "Soporte prioritario",
     ],
     popular: false,
   },
