@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { Check, CreditCard, ShieldCheck } from "lucide-react";
 
 const PLANS = [
-  { id: "STARTER", name: "Starter", price: "$29/mes", desc: "2,000 contactos · 3 agentes · Broadcasts" },
-  { id: "PRO", name: "Pro", price: "$79/mes", desc: "25,000 contactos · 10 agentes · Agente IA 24/7" },
-  { id: "ENTERPRISE", name: "Enterprise", price: "$199/mes", desc: "Ilimitado · Multi-número · API & Marca Blanca" },
+  { id: "STARTER", name: "Básico", price: "$12/mes", desc: "2,000 contactos · 2 agentes · Bot de menú" },
+  { id: "PRO", name: "Pro IA", price: "$19/mes", desc: "5 agentes · Agente IA 24/7 · Seguimiento automático" },
+  { id: "ENTERPRISE", name: "Business", price: "$39/mes", desc: "25,000 contactos · 15 agentes · Sheets & Webhooks" },
 ];
 
 export default function BillingPage() {

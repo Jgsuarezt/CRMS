@@ -247,7 +247,7 @@ export async function seedWorkspaceDefaults(workspaceId: string, ownerId: string
         triggerType: "KEYWORD",
         triggerKeywords: "precio,planes,costo,tarifa,cuanto",
         responseText:
-          "Nuestros planes inician desde $29/mes (Starter) y $79/mes (Pro) con 0% de recargo en mensajes de Meta. ¿Te gustaría agendar una demo?",
+          "Nuestros planes inician desde $12/mes (Básico), $19/mes (Pro IA) y $39/mes (Business) con 0% de recargo en mensajes de Meta. ¿Te gustaría agendar una demo?",
         buttonsJson: JSON.stringify(["Agendar Demo", "Ver Comparativa"]),
         isActive: true,
         executionsCount: 128,

@@ -49,38 +49,38 @@ const FEATURES = [
 
 const PLANS = [
   {
-    name: "Starter",
-    price: "$29",
-    desc: "Ideal para negocios que inician con la API oficial de WhatsApp.",
+    name: "Básico",
+    price: "$12",
+    desc: "Ideal para negocios locales que inician con la API oficial de WhatsApp.",
     features: [
+      "1 número de WhatsApp + 2 agentes",
       "Hasta 2,000 contactos CRM",
-      "3 agentes en Inbox Compartido",
-      "Campañas masivas ilimitadas",
+      "Chatbot de menú y palabras clave",
       "0% de recargo sobre tarifas Meta",
     ],
     popular: false,
   },
   {
-    name: "Pro",
-    price: "$79",
-    desc: "Para equipos de ventas y soporte que automatizan con IA.",
+    name: "Pro IA",
+    price: "$19",
+    desc: "Tu vendedor inteligente 24/7 que cotiza y da seguimiento solo.",
     features: [
-      "Hasta 25,000 contactos CRM",
-      "10 agentes + Enrutamiento automático",
-      "Agente IA 24/7 + Flujos ilimitados",
-      "Integración Shopify / WooCommerce / Webhooks",
+      "Hasta 5 agentes en Inbox Compartido",
+      "Agente IA 24/7 entrenado con tus precios",
+      "Seguimiento automático y recordatorios",
+      "Campañas masivas + 0% recargo Meta",
     ],
     popular: true,
   },
   {
-    name: "Enterprise",
-    price: "$199",
-    desc: "Para agencias y grandes empresas multi-marca.",
+    name: "Business",
+    price: "$39",
+    desc: "Para negocios con múltiples sucursales, alto volumen o agencias.",
     features: [
-      "Contactos y agentes ilimitados",
-      "Múltiples números de WhatsApp",
-      "Soporte prioritario y SLA dedicado",
-      "Acceso completo API & Marca Blanca",
+      "Hasta 15 agentes y 25,000 contactos",
+      "Enrutamiento por sucursal / departamento",
+      "Google Sheets, Shopify, Webhooks y API",
+      "Soporte prioritario",
     ],
     popular: false,
   },
@@ -193,7 +193,7 @@ export default function HomePage() {
                     <Bot className="w-3.5 h-3.5" /> ChimpBot IA · Respuesta automática
                   </p>
                   <p>
-                    ¡Hola Sofía! Cobramos 0% de recargo sobre las tarifas oficiales de Meta. Pagas directo a Meta y solo tu plan mensual desde $29/mes.
+                    ¡Hola Sofía! Cobramos 0% de recargo sobre las tarifas oficiales de Meta. Pagas directo a Meta y solo tu plan mensual desde $12/mes.
                   </p>
                 </div>
 

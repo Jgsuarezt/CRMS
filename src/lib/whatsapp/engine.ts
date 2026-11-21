@@ -57,7 +57,7 @@ async function generateAiReply(
     const match = kbLines.find((l) => l.toLowerCase().includes("plan") || l.toLowerCase().includes("0%"));
     return (
       match ||
-      `Nuestros planes inician en $29/mes con 0% de recargo sobre las tarifas oficiales de Meta. Pagas directo a Meta por tus mensajes.`
+      `Nuestros planes inician en $12/mes (Básico) y $19/mes (Pro IA) con 0% de recargo sobre las tarifas oficiales de Meta. Pagas directo a Meta por tus mensajes.`
     );
   }
   if (lower.includes("cita") || lower.includes("demo") || lower.includes("agendar")) {
