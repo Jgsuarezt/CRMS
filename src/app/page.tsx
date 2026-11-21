@@ -356,7 +356,15 @@ export default function HomePage() {
             <MessageSquareText className="w-4 h-4 text-emerald-400" />
             <span>ChimpFlow CRM</span>
           </div>
-          <p>Plataforma SaaS de WhatsApp Marketing, Inbox Compartido & Agentes IA.</p>
+          <div className="flex items-center gap-6 text-xs">
+            <Link href="/privacidad" className="hover:text-white transition">
+              Política de Privacidad
+            </Link>
+            <Link href="/terminos" className="hover:text-white transition">
+              Términos de Servicio
+            </Link>
+          </div>
+          <p className="text-xs">WhatsApp Marketing, Inbox Compartido & Agentes IA.</p>
         </div>
       </footer>
     </div>
